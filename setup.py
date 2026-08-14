@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="meditation",
-    version="2.1.0",
+    version="3.0.0",
     description="A colorful, animated, cross-platform terminal meditation companion.",
     long_description=long_description,
     long_description_content_type="text/markdown",
