@@ -152,6 +152,30 @@ def cmd_timer() -> None:
         console.print(Align.center(table))
 
 
+def cmd_tharataka() -> None:
+    banner()
+    console.print(Align.center(Text("Tharataka Meditation", style=f"bold {anim.SAFFRON}")))
+    console.print(Align.center(Text("Gaze steadily at the black circle. Let your eyes rest gently on it.\n", style="dim")))
+    try:
+        minutes = IntPrompt.ask("How many minutes?", default=5)
+    except Exception:
+        minutes = 5
+    minutes = max(1, min(minutes, 120))
+    duration_seconds = minutes * 60
+    
+    console.print(Align.center(Text(f"\nGaze steadily. Closing eyes after {minutes} minute(s)...", style="dim")))
+    console.print(Align.center(Text("(Ctrl+C to stop early)\n", style="dim italic")))
+    
+    try:
+        anim.tharataka_meditation(duration_seconds)
+        _history.add_session(duration_seconds, "tharataka")
+    except KeyboardInterrupt:
+        console.print(Align.center(Text("\nSession paused.", style=f"bold {anim.SAFFRON}")))
+        return
+    
+    console.print(Align.center(Text("\nSession complete. Gently close your eyes and observe the afterimage.", style=f"bold {anim.TEAL}")))
+
+
 def cmd_stats() -> None:
     """Display comprehensive meditation statistics."""
     banner()
@@ -277,11 +301,12 @@ def cmd_about() -> None:
 MENU = [
     ("1", "Guided breathing exercise", "follow the breath in and out, cycle by cycle", cmd_breathing),
     ("2", "Meditation timer", "sit quietly while a timer counts your session", cmd_timer),
-    ("3", "View session history & stats", "see your progress and meditation patterns", cmd_stats),
-    ("4", "A quiet reflection", "one short original line to sit with", cmd_quote),
-    ("5", "About this tool", "what this app is and how it works", cmd_about),
-    ("6", "Open Abhidhamma Teachings", "Buddha's deep teaching on the nature of mind", lambda: _open_direct("1")),
-    ("7", "Open Lahari Mantras", "traditional chants for focus and devotion", lambda: _open_direct("2")),
+    ("3", "Tharataka meditation", "gaze at a black circle on white background with timer", cmd_tharataka),
+    ("4", "View session history & stats", "see your progress and meditation patterns", cmd_stats),
+    ("5", "A quiet reflection", "one short original line to sit with", cmd_quote),
+    ("6", "About this tool", "what this app is and how it works", cmd_about),
+    ("7", "Open Abhidhamma Teachings", "Buddha's deep teaching on the nature of mind", lambda: _open_direct("1")),
+    ("8", "Open Lahari Mantras", "traditional chants for focus and devotion", lambda: _open_direct("2")),
     ("0", "Exit", "close the session and return to your shell", None),
 ]
 
@@ -331,7 +356,7 @@ def main() -> None:
             action()
             # Every command (except the two direct-open shortcuts, which
             # already are a link action) ends with the links footer.
-            if choice not in ("6", "7"):
+            if choice not in ("7", "8"):
                 show_links_menu()
     except KeyboardInterrupt:
         console.print()
