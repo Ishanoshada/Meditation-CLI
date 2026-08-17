@@ -263,3 +263,50 @@ def timer_with_progress(duration_seconds: int, message: str = "Meditating"):
             remaining = max(0, duration_seconds - elapsed)
             progress.update(task, completed=elapsed, remaining=remaining)
             time.sleep(0.1)
+
+def tharataka_meditation(duration_seconds: int):
+    """Tharataka (candle-gazing) meditation with a black circle on white background and timer."""
+    start_time = time.time()
+    circle_radius = 6
+    
+    term_width = console.width
+    term_height = console.height
+    
+    try:
+        while True:
+            elapsed = time.time() - start_time
+            remaining = max(0, duration_seconds - elapsed)
+            
+            console.clear()
+            
+            lines = []
+            for y in range(term_height - 2):
+                row_text = Text()
+                for x in range(term_width):
+                    center_x = term_width / 2
+                    center_y = (term_height - 2) / 2
+                    d = math.hypot((x - center_x) / 1.5, y - center_y)
+                    
+                    if d <= circle_radius:
+                        row_text.append("█", style="black on white")
+                    else:
+                        row_text.append(" ", style="on white")
+                
+                lines.append(row_text)
+            
+            mins = int(remaining) // 60
+            secs = int(remaining) % 60
+            time_display = f"{mins}:{secs:02d}"
+            
+            for line in lines:
+                console.print(line)
+            
+            timer_text = Text(f"⏱️ {time_display}", style="bold white on black", justify="center")
+            console.print(Align.center(timer_text))
+            
+            if remaining <= 0:
+                break
+            
+            time.sleep(0.1)
+    except KeyboardInterrupt:
+        pass
